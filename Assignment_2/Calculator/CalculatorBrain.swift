@@ -15,6 +15,17 @@ class CalculatorBrain{
     private var descriptionAccumulator = ""
     var isPartialResult : Bool { return pending != nil }
     private var pending: PendingBinaryOperationInfo?
+    var variableValues = [String:Double]() {
+        didSet {
+            program = internalProgram as CalculatorBrain.PropertyList
+        }
+    }
+    
+    func setOperand (variableName: String) {
+        accumulator = variableValues[variableName] ?? 0
+        descriptionAccumulator = variableName
+        internalProgram.append(variableName as AnyObject)
+    }
     
     
     var result: Double { return accumulator }
@@ -113,6 +124,7 @@ class CalculatorBrain{
     
     
     typealias PropertyList = AnyObject
+    
     var program: PropertyList {
         get {
             return internalProgram as CalculatorBrain.PropertyList
@@ -125,7 +137,12 @@ class CalculatorBrain{
                     if let operand = op as? Double {
                         setOperand(operand)
                     } else if let operation = op as? String {
-                        performOperation(operation)
+                        if operations[operation] != nil {
+                            performOperation(operation)
+                        } else {
+                            // operation is a variable
+                            setOperand(variableName: operation)
+                        }
                     }
                 }
             }
