@@ -10,7 +10,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class CalculatorViewController: UIViewController {
     @IBOutlet private weak var display: UILabel!
     @IBOutlet private weak var displayLog: UILabel!
     
