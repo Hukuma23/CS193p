@@ -36,7 +36,7 @@ class CalculatorViewController: UIViewController {
         userIsInTheMiddleOfTyping = true
     }
     
-    private var displayValue : Double{
+    private var displayValue : Double {
         get{
             return Double(display.text!)!
         }
@@ -50,6 +50,27 @@ class CalculatorViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func pushVariable(_ sender: UIButton) {
+        let variable = sender.currentTitle!
+        brain.setOperand(variableName: variable)
+        displayValue = brain.result
+    }
+    
+    
+    @IBAction func setVariable(_ sender: UIButton) {
+        userIsInTheMiddleOfTyping = false
+        let variable = String(sender.currentTitle!.characters.dropFirst())
+    
+        brain.variableValues[variable] = displayValue
+        displayValue = brain.result
+        /*
+        if let value = displayValue {
+            brain.variableValues[variable] = value
+            displayValue = brain.result
+        }*/
+    }
+    
     
     var savedProgram: CalculatorBrain.PropertyList?
     @IBAction func restore() {
@@ -74,6 +95,7 @@ class CalculatorViewController: UIViewController {
             if mathimaticalSymbol == "C" {
                 userIsInTheMiddleOfTyping = false
                 displayLog.text = " "
+                brain.variableValues.removeAll()
             }
             brain.performOperation(mathimaticalSymbol)
         }
