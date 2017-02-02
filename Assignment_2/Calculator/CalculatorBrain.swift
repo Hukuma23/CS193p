@@ -45,6 +45,7 @@ class CalculatorBrain{
         accumulator = 0
         descriptionAccumulator = ""
         pending = nil
+        error = nil
         internalProgram.removeAll(keepingCapacity: false)
     }
     
