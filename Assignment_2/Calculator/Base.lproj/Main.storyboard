@@ -53,7 +53,7 @@
                                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                         <state key="normal" title="C"/>
                                                         <connections>
-                                                            <action selector="performOperation:" destination="Gih-LV-35x" eventType="touchUpInside" id="dVL-Ho-s17"/>
+                                                            <action selector="clearAll:" destination="Gih-LV-35x" eventType="touchUpInside" id="lbY-jL-88W"/>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="buQ-5t-rLZ">
@@ -338,8 +338,13 @@
                                                         <rect key="frame" x="282.5" y="0.0" width="60.5" height="80.5"/>
                                                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                        <state key="normal">
+                                                            <string key="title">←
+LEFTWARDS ARROW
+Unicode: U+2190, UTF-8: E2 86 90</string>
+                                                        </state>
                                                         <connections>
-                                                            <action selector="performOperation:" destination="Gih-LV-35x" eventType="touchUpInside" id="q0v-Rp-b3j"/>
+                                                            <action selector="backspace:" destination="Gih-LV-35x" eventType="touchUpInside" id="tX8-3s-pxC"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>

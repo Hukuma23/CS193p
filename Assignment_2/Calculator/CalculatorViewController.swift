@@ -15,6 +15,43 @@ class CalculatorViewController: UIViewController {
     @IBOutlet private weak var displayLog: UILabel!
     
     private var userIsInTheMiddleOfTyping = false
+    private var brain = CalculatorBrain()
+    
+    var savedProgram: CalculatorBrain.PropertyList?
+
+    
+    private var displayValue : Double? {
+        get{
+            if let text = display.text,
+                let value = formatter.number(from: text)?.doubleValue {
+                return value
+            }
+            return nil
+        }
+        set{
+            if let value = newValue {
+                display.text = formatter.string(from: NSNumber(value: value))
+                displayLog.text = brain.description + (brain.isPartialResult ? " …" : " =")
+            } else {
+                display.text = "0"
+                displayLog.text = " "
+                userIsInTheMiddleOfTyping = false
+            }
+        }
+    }
+    
+    
+    private var resultValue : (value: Double, error: String?) = (0, nil) {
+        didSet {
+            switch resultValue {
+            case (_, nil): displayValue = resultValue.value
+            case (_ , let error):
+                display.text = error
+                displayLog.text = brain.description + (brain.isPartialResult ? "..." : "=")
+                userIsInTheMiddleOfTyping = false
+            }
+        }
+    }
     
     @IBAction private func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
@@ -36,59 +73,72 @@ class CalculatorViewController: UIViewController {
         userIsInTheMiddleOfTyping = true
     }
     
-    private var displayValue : Double {
-        get{
-            return Double(display.text!)!
-        }
-        set{
-            if newValue == 0 {
-                display.text = "0"
-            } else {
-                display.text = formatter.string(from: NSNumber(value: newValue))
-                displayLog.text = brain.description + (brain.isPartialResult ? " …" : " =")
-
-            }
-        }
-    }
+    
     
     @IBAction func pushVariable(_ sender: UIButton) {
         let variable = sender.currentTitle!
         brain.setOperand(variableName: variable)
-        displayValue = brain.result
+        resultValue = brain.result
     }
     
     
     @IBAction func setVariable(_ sender: UIButton) {
         userIsInTheMiddleOfTyping = false
         let variable = String(sender.currentTitle!.characters.dropFirst())
-    
+        
         brain.variableValues[variable] = displayValue
-        displayValue = brain.result
+        resultValue = brain.result
         /*
-        if let value = displayValue {
-            brain.variableValues[variable] = value
-            displayValue = brain.result
-        }*/
+         if let value = displayValue {
+         brain.variableValues[variable] = value
+         displayValue = brain.result
+         }*/
     }
     
     
-    var savedProgram: CalculatorBrain.PropertyList?
+    
     @IBAction func restore() {
         if savedProgram != nil {
             brain.program = savedProgram!
-            displayValue = brain.result
+            resultValue = brain.result
         }
     }
     @IBAction func save() {
         savedProgram = brain.program
     }
     
-    private var brain = CalculatorBrain()
+    
+    @IBAction func backspace(_ sender: UIButton) {
+        if userIsInTheMiddleOfTyping {
+            let last = display.text!.characters.index(before: display.text!.endIndex)
+            
+            display.text?.remove(at: last)
+            if display.text!.isEmpty {
+                userIsInTheMiddleOfTyping = false
+                resultValue = brain.result
+            }
+        } else {
+            brain.undoLast()
+            resultValue = brain.result
+        }
+        
+    }
+    
+    
+    @IBAction func clearAll(_ sender: UIButton) {
+        userIsInTheMiddleOfTyping = false
+        displayLog.text = " "
+        brain.clear()
+        brain.clearVariables()
+        resultValue = brain.result
+    }
     
     @IBAction private func performOperation(_ sender: UIButton) {
         
         if userIsInTheMiddleOfTyping {
-            brain.setOperand(displayValue)
+            if let value = displayValue {
+                brain.setOperand(value)
+            }
             userIsInTheMiddleOfTyping = false
         }
         if let mathimaticalSymbol = sender.currentTitle{
@@ -99,9 +149,12 @@ class CalculatorViewController: UIViewController {
             }
             brain.performOperation(mathimaticalSymbol)
         }
-        displayValue = brain.result
+        resultValue = brain.result
         print("\(brain.description)")
     }
+    
+    
+    
     
     let formatter:NumberFormatter = {
         let formatter = NumberFormatter()
