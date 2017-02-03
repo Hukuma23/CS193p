@@ -14,6 +14,8 @@ class GraphView: UIView {
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     
+    var yForX : ((_ x: Double) -> Double?)? { didSet { setNeedsDisplay() } }
+    
     var axesDrawer = AxesDrawer();
     
     @IBInspectable
@@ -65,12 +67,59 @@ class GraphView: UIView {
         }
     }
     
+    // MARK: - Drawing
+    
+    func drawCurveInRect(bounds: CGRect, origin: CGPoint, scale: CGFloat) {
+        color.set()
+        
+        var xGraph, yGraph : CGFloat
+        var x : Double { return Double((xGraph - origin.x) / scale) }
+        
+        var oldPoint = OldPoint(yGraph: 0.0, normal: false)
+        var discontinuity : Bool {
+            return abs(yGraph - oldPoint.yGraph) > max(bounds.width, bounds.height) * 1.5
+        }
+        
+        let path = UIBezierPath()
+        path.lineWidth = lineWidth
+        
+        for i in 0 ... Int(bounds.size.width * contentScaleFactor) {
+            xGraph = CGFloat(i) / contentScaleFactor
+            guard let y = (yForX)?(x), y.isFinite
+                else { oldPoint.normal = false; continue }
+            
+            yGraph = origin.y - CGFloat(y) * scale
+            
+            if !oldPoint.normal {
+                path.move(to: CGPoint(x: xGraph, y: yGraph))
+            } else {
+                guard !discontinuity else {
+                    oldPoint = OldPoint(yGraph: yGraph, normal: false)
+                    continue
+                }
+                
+                path.addLine(to: CGPoint(x: xGraph, y: yGraph))
+            }
+            
+            oldPoint = OldPoint(yGraph: yGraph, normal: true)
+        }
+        path.stroke()
+        
+    }
+    
+    private struct OldPoint {
+        var yGraph : CGFloat
+        var normal : Bool
+    }
+    
     
     override func draw(_ rect: CGRect) {
         // Drawing code
         
         axesDrawer.contentScaleFactor = contentScaleFactor
         axesDrawer.drawAxes(in: bounds, origin: origin, pointsPerUnit: scale)
+        
+        drawCurveInRect(bounds: bounds, origin: origin, scale: scale)
     }
     
     

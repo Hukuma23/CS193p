@@ -75,7 +75,6 @@
                                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                         <state key="normal" title="→M"/>
                                                         <connections>
-                                                            <action selector="performOperation:" destination="Gih-LV-35x" eventType="touchUpInside" id="n4m-9c-wtb"/>
                                                             <action selector="setVariable:" destination="Gih-LV-35x" eventType="touchUpInside" id="nV8-RA-tyW"/>
                                                         </connections>
                                                     </button>
@@ -85,7 +84,6 @@
                                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                         <state key="normal" title="M"/>
                                                         <connections>
-                                                            <action selector="performOperation:" destination="Gih-LV-35x" eventType="touchUpInside" id="WQR-yZ-vvV"/>
                                                             <action selector="pushVariable:" destination="Gih-LV-35x" eventType="touchUpInside" id="Yfe-TK-H4r"/>
                                                         </connections>
                                                     </button>
@@ -118,6 +116,9 @@
                                                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                         <state key="normal" title="cos"/>
+                                                        <connections>
+                                                            <action selector="performOperation:" destination="Gih-LV-35x" eventType="touchUpInside" id="RZm-22-s40"/>
+                                                        </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Go-4n-Suc">
                                                         <rect key="frame" x="70.5" y="0.0" width="60.5" height="61"/>

@@ -10,7 +10,7 @@
 
 import UIKit
 
-class CalculatorViewController: UIViewController {
+class CalculatorViewController: UIViewController, UISplitViewControllerDelegate {
     @IBOutlet private weak var display: UILabel!
     @IBOutlet private weak var displayLog: UILabel!
     
@@ -19,6 +19,9 @@ class CalculatorViewController: UIViewController {
     
     var savedProgram: CalculatorBrain.PropertyList?
 
+    private struct Storyboard {
+        static let ShowGraph = "Show Graph"
+    }
     
     private var displayValue : Double? {
         get{
@@ -166,6 +169,72 @@ class CalculatorViewController: UIViewController {
         return formatter
         
     } ()
+    
+    
+    // MARK: - Navigation
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return !brain.isPartialResult
+    }
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        
+        var destinationVC = segue.destination
+        if let navCon = destinationVC as? UINavigationController {
+            destinationVC = navCon.visibleViewController ?? destinationVC
+        }
+        if let graphVC = destinationVC as? GraphViewController, segue.identifier == Storyboard.ShowGraph {
+            prepareGraphVC(graphVC)
+        }
+    }
+    
+    private func prepareGraphVC(_ graphVC : GraphViewController) {
+        graphVC.navigationItem.title = brain.description
+        
+        graphVC.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
+        graphVC.navigationItem.leftItemsSupplementBackButton = true
+        
+        graphVC.yForX = { [ weak weakSelf = self] x in
+            weakSelf?.brain.variableValues["M"] = x
+            return weakSelf?.brain.result.0
+        }
+    }
+    
+    // MARK: - Life Cycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        splitViewController?.delegate = self
+        
+        if let program = savedProgram {
+            brain.program = program
+            if let graphVC = splitViewController?.viewControllers.last?.presentedViewController as? GraphViewController {
+                prepareGraphVC(graphVC)
+            }
+        }
+    }
+    
+    
+    // MARK: - UISplitViewControllerDelegate
+    
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+        
+        /*
+        if primaryViewController == self {
+            if let graphVC = secondaryViewController as? GraphViewController {
+                if graphVC.yForX == nil {
+                    return true
+                }
+            }
+        }
+        return false
+ */
+        return true
+    }
     
 }
 
