@@ -457,6 +457,9 @@
                         </userDefinedRuntimeAttributes>
                     </view>
                     <navigationItem key="navigationItem" title="Graph" id="fDP-xY-J8X"/>
+                    <connections>
+                        <outlet property="graphView" destination="8wV-Ch-R9e" id="0mb-uH-BSh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7zy-LY-UI9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

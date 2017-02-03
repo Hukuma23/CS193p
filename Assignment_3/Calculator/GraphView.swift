@@ -10,7 +10,7 @@ import UIKit
 
 @IBDesignable
 class GraphView: UIView {
-
+    
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     
@@ -21,10 +21,10 @@ class GraphView: UIView {
     
     @IBInspectable
     var lineWidth : CGFloat = 2.0 { didSet { setNeedsDisplay() } }
-
+    
     @IBInspectable
     var color : UIColor = UIColor.black { didSet { setNeedsDisplay() } }
-
+    
     private var originSet : CGPoint? { didSet { setNeedsDisplay() } }
     var origin : CGPoint {
         get {
@@ -36,12 +36,42 @@ class GraphView: UIView {
         }
     }
     
+    // MARK: - Gestures
+    
+    func scale(_ gesture: UIPinchGestureRecognizer) {
+        if gesture.state == .changed {
+            scale *= gesture.scale
+            gesture.scale = 1.0
+        }
+    }
+    
+    func originMove(_ gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
+        case .ended: fallthrough
+        case .changed:
+            let translation = gesture.translation(in: self)
+            if translation != CGPoint.zero {
+                origin.x += translation.x
+                origin.y += translation.y
+                gesture.setTranslation(CGPoint.zero, in: self)
+            }
+        default: break
+        }
+    }
+    
+    func origin(_ gesture: UITapGestureRecognizer) {
+        if gesture.state == .ended {
+            origin = gesture.location(in: self)
+        }
+    }
+    
+    
     override func draw(_ rect: CGRect) {
         // Drawing code
         
         axesDrawer.contentScaleFactor = contentScaleFactor
         axesDrawer.drawAxes(in: bounds, origin: origin, pointsPerUnit: scale)
     }
-
-
+    
+    
 }
