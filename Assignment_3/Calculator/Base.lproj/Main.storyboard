@@ -409,6 +409,7 @@
                     <connections>
                         <outlet property="display" destination="MNZ-th-R0G" id="0xa-DZ-UPh"/>
                         <outlet property="displayLog" destination="6h9-KE-eVH" id="9Qp-cj-GkS"/>
+                        <outlet property="graph" destination="mJR-cy-PYT" id="BtB-80-qpe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V0p-p0-ZcM" sceneMemberID="firstResponder"/>

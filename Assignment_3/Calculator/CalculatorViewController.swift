@@ -13,6 +13,12 @@ import UIKit
 class CalculatorViewController: UIViewController, UISplitViewControllerDelegate {
     @IBOutlet private weak var display: UILabel!
     @IBOutlet private weak var displayLog: UILabel!
+    @IBOutlet weak var graph: UIButton! {
+        didSet {
+            graph.isEnabled = false
+            
+        }
+    }
     
     private var userIsInTheMiddleOfTyping = false
     private var brain = CalculatorBrain()
@@ -46,6 +52,7 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
     
     private var resultValue : (value: Double, error: String?) = (0, nil) {
         didSet {
+            graph.isEnabled = !brain.isPartialResult
             switch resultValue {
             case (_, nil): displayValue = resultValue.value
             case (_ , let error):
@@ -126,6 +133,7 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
         }
         
     }
+    
     
     
     @IBAction func clearAll(_ sender: UIButton) {
@@ -218,6 +226,12 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if !brain.isPartialResult {
+            savedProgram = brain.program
+        }
+    }
     
     // MARK: - UISplitViewControllerDelegate
     

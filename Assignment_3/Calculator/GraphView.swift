@@ -27,14 +27,24 @@ class GraphView: UIView {
     @IBInspectable
     var color : UIColor = UIColor.black { didSet { setNeedsDisplay() } }
     
-    private var originSet : CGPoint? { didSet { setNeedsDisplay() } }
-    var origin : CGPoint {
+    private var graphCenter : CGPoint { return convert(center, from: superview) }
+    
+    //private var originSet : CGPoint? { didSet { setNeedsDisplay() } }
+    public var originRelativeToCenter : CGPoint = CGPoint.zero { didSet { setNeedsDisplay() } }
+    
+    private var origin : CGPoint {
         get {
-            return originSet ?? CGPoint(x: bounds.midX, y: bounds.midY)
+            var origin = originRelativeToCenter
+            origin.x += graphCenter.x
+            origin.y += graphCenter.y
+            return origin
         }
         
         set {
-            originSet = newValue
+            var origin = newValue
+            origin.x -= graphCenter.x
+            origin.y -= graphCenter.y
+            originRelativeToCenter = origin
         }
     }
     
