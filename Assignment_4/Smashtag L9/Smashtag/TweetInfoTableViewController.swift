@@ -37,10 +37,10 @@ class TweetInfoTableViewController: UITableViewController {
         
         var cellIdentifier : String {
             switch self {
-            case .Image:
-                return Storyboard.ImageCellIdentifier
-            case .URL, .Hashtag, .User:
-                return Storyboard.MentionCellIdentifier
+            case .Image:    return Storyboard.ImageCellIdentifier
+            case .Hashtag,
+                 .User:     return Storyboard.MentionCellIdentifier
+            case .URL:      return Storyboard.URLCellIdentifier
             }
         }
     }
@@ -104,8 +104,6 @@ class TweetInfoTableViewController: UITableViewController {
                 return imageCell
             }
         }
-        
-        // Configure the cell...
         return cell
     }
     
@@ -129,18 +127,24 @@ class TweetInfoTableViewController: UITableViewController {
     private struct Storyboard {
         static let ImageCellIdentifier = "Image Cell"
         static let MentionCellIdentifier = "Mention Cell"
+        static let URLCellIdentifier = "URL Cell"
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
+    // MARK: - Navigation
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        
+        if let tvCell = sender as? UITableViewCell {
+            let destinationVC = segue.destination
+            if let tweetTVC = destinationVC as? TweetTableViewController, tvCell.reuseIdentifier == Storyboard.MentionCellIdentifier {
+                tweetTVC.searchText = tvCell.textLabel?.text
+            }
+        }
+    }
 }
 
 
