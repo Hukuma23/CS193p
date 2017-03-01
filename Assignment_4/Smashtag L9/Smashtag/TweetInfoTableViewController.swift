@@ -113,19 +113,16 @@ class TweetInfoTableViewController: UITableViewController {
         return dataModel[section].name
     }
     
-    /*
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch dataModel[indexPath.section] {
         case .Image(_, let images):
-            if let img = UIImage(contentsOfFile: images[indexPath.row].url.absoluteString) {
-                return img.size.height
-            }
+            return tableView.bounds.size.width / CGFloat(images[indexPath.row].aspectRatio)
         default:
-            break
+            return UITableViewAutomaticDimension
         }
-        return 100
     }
-    */
+    
     
     // MARK: Constants
     
