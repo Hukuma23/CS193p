@@ -22,7 +22,7 @@ class TweetTableViewCell: UITableViewCell
         }
     }
     
-    private func updateUI()
+    fileprivate func updateUI()
     {
         // reset any existing tweet information
         tweetTextLabel?.attributedText = nil
@@ -33,48 +33,30 @@ class TweetTableViewCell: UITableViewCell
         // load new information from our tweet (if any)
         if let tweet = self.tweet
         {
-            var addImg = ""
-            for _ in tweet.media {
-                addImg += " 📷"
-            }
-            
-            let myAttributedString = NSMutableAttributedString(string: tweet.text + addImg)
-            
-            for hashtag in tweet.hashtags {
-                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.orange, range: hashtag.nsrange)
-            }
-            
-            for url in tweet.urls {
-                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blue, range: url.nsrange)
-            }
-            
-            for user in tweet.userMentions {
-                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.green, range: user.nsrange)
-            }
-            tweetTextLabel?.attributedText = myAttributedString
-            
-
-            
-            tweetScreenNameLabel?.text = "\(tweet.user)" // tweet.user.description
-            
-            
-            
-            if let profileImageURL = tweet.user.profileImageURL {
-                if let imageData = try? Data(contentsOf: profileImageURL) { // blocks main thread!
-                    tweetProfileImageView?.image = UIImage(data: imageData)
+            tweetTextLabel?.text = tweet.text
+            if tweetTextLabel?.text != nil  {
+                for _ in tweet.media {
+                    tweetTextLabel.text! += " 📷"
                 }
             }
             
+            tweetScreenNameLabel?.text = "\(tweet.user)" // tweet.user.description
+            /*
+            if let profileImageURL = tweet.user.profileImageURL {
+                if let imageData = Data(contentsOfURL: profileImageURL) { // blocks main thread!
+                    tweetProfileImageView?.image = UIImage(data: imageData)
+                }
+            }*/
             
             let formatter = DateFormatter()
-            if  Date().timeIntervalSince(tweet.created) > 24*60*60 {
+            if Date().timeIntervalSince(tweet.created) > 24*60*60 {
                 formatter.dateStyle = DateFormatter.Style.short
             } else {
                 formatter.timeStyle = DateFormatter.Style.short
             }
             tweetCreatedLabel?.text = formatter.string(from: tweet.created)
         }
-        
+
     }
     
 }

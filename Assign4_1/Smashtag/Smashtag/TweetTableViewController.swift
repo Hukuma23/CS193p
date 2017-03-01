@@ -12,7 +12,7 @@ import Twitter
 class TweetTableViewController: UITableViewController, UITextFieldDelegate
 {
     // MARK: Model
-    
+
     var tweets = [Array<Twitter.Tweet>]() {
         didSet {
             tableView.reloadData()
@@ -30,18 +30,18 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate
     
     // MARK: Fetching Tweets
     
-    private var twitterRequest: Twitter.Request? {
+    fileprivate var twitterRequest: Twitter.Request? {
         if lastTwitterRequest == nil {
-            if let query = searchText , !query.isEmpty {
+            if let query = searchText, !query.isEmpty {
                 return Twitter.Request(search: query + " -filter:retweets", count: 100)
             }
         }
         return lastTwitterRequest?.requestForNewer
     }
     
-    private var lastTwitterRequest: Twitter.Request?
-    
-    private func searchForTweets()
+    fileprivate var lastTwitterRequest: Twitter.Request?
+
+    fileprivate func searchForTweets()
     {
         if let request = twitterRequest {
             lastTwitterRequest = request
@@ -65,39 +65,38 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate
     }
     
     // MARK: UITableViewDataSource
-    
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "\(tweets.count - section)"
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return tweets.count
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tweets[section].count
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Storyboard.TweetCellIdentifier, for: indexPath)
-        
+
         let tweet = tweets[indexPath.section][indexPath.row]
         if let tweetCell = cell as? TweetTableViewCell {
             tweetCell.tweet = tweet
         }
-        
+    
         return cell
     }
     
     // MARK: Constants
     
-    private struct Storyboard {
+    fileprivate struct Storyboard {
         static let TweetCellIdentifier = "Tweet"
-        static let ShowDetail = "Show Detail"
     }
     
     // MARK: Outlets
-    
+
     @IBOutlet weak var searchTextField: UITextField! {
         didSet {
             searchTextField.delegate = self
@@ -106,7 +105,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate
     }
     
     // MARK: UITextFieldDelegate
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         searchText = textField.text
@@ -120,30 +119,14 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
     }
-    
-    
-    
+
+    /*
     // MARK: - Navigation
-    
+
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        var destinationVC = segue.destination
-        if let navCon = destinationVC as? UINavigationController {
-            destinationVC = navCon.visibleViewController ?? destinationVC
-        }
-        
-        if let vc = destinationVC as? TweetInfoTableViewController, segue.identifier == Storyboard.ShowDetail {
-            if let sender = sender as? TweetTableViewCell {
-                print("Sender is tweetTableViewCell = \(sender.tweet?.text)")
-                //vc.navigationItem.title = sender.tweet?.user.name
-                vc.tweet = sender.tweet
-            }
-        }
-        
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
-    
-    
+    */
 }
