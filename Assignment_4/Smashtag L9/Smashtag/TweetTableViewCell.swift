@@ -22,6 +22,12 @@ class TweetTableViewCell: UITableViewCell
         }
     }
     
+    struct Palette {
+        static let hashtagColor = UIColor.orange
+        static let urlColor = UIColor.blue
+        static let userColor = UIColor.green
+    }
+    
     private func updateUI()
     {
         // reset any existing tweet information
@@ -41,15 +47,15 @@ class TweetTableViewCell: UITableViewCell
             let myAttributedString = NSMutableAttributedString(string: tweet.text + addImg)
             
             for hashtag in tweet.hashtags {
-                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.orange, range: hashtag.nsrange)
+                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: Palette.hashtagColor, range: hashtag.nsrange)
             }
             
             for url in tweet.urls {
-                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blue, range: url.nsrange)
+                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: Palette.urlColor, range: url.nsrange)
             }
             
             for user in tweet.userMentions {
-                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.green, range: user.nsrange)
+                myAttributedString.addAttribute(NSForegroundColorAttributeName, value: Palette.userColor, range: user.nsrange)
             }
             tweetTextLabel?.attributedText = myAttributedString
             
