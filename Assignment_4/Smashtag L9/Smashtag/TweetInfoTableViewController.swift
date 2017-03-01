@@ -37,10 +37,10 @@ class TweetInfoTableViewController: UITableViewController {
         
         var cellIdentifier : String {
             switch self {
-            case .Image: return Storyboard.ImageCellIdentifier
-            case .URL: return Storyboard.URLCellIdentifier
-            case .Hashtag: return Storyboard.HashtagCellIdentifier
-            case .User: return Storyboard.UserCellIdentifier
+            case .Image:
+                return Storyboard.ImageCellIdentifier
+            case .URL, .Hashtag, .User:
+                return Storyboard.MentionCellIdentifier
             }
         }
     }
@@ -55,15 +55,15 @@ class TweetInfoTableViewController: UITableViewController {
                 self.navigationItem.title = tweet.user.name
                 
                 if tweet.media.count > 0 { dataModel.append(.Image(count: tweet.media.count, images: tweet.media)) }
-                if tweet.urls.count > 0 { dataModel.append(.URL(count: tweet.urls.count, items: getItems(tweetText: tweet.text, byMentions: tweet.urls))) }
-                if tweet.hashtags.count > 0 { dataModel.append(.Hashtag(count: tweet.hashtags.count, items: getItems(tweetText: tweet.text, byMentions: tweet.hashtags))) }
-                if tweet.userMentions.count > 0 { dataModel.append(.User(count: tweet.userMentions.count, items: getItems(tweetText: tweet.text, byMentions: tweet.userMentions))) }
+                if tweet.urls.count > 0 { dataModel.append(.URL(count: tweet.urls.count, items: getItems(byMentions: tweet.urls))) }
+                if tweet.hashtags.count > 0 { dataModel.append(.Hashtag(count: tweet.hashtags.count, items: getItems(byMentions: tweet.hashtags))) }
+                if tweet.userMentions.count > 0 { dataModel.append(.User(count: tweet.userMentions.count, items: getItems(byMentions: tweet.userMentions))) }
             }
             tableView.reloadData()
         }
     }
     
-    func getItems(tweetText tweet: String, byMentions mentions: [Mention]) -> [String] {
+    func getItems(byMentions mentions: [Mention]) -> [String] {
         var result = [String]()
         
         for mention in mentions {
@@ -127,10 +127,8 @@ class TweetInfoTableViewController: UITableViewController {
     // MARK: Constants
     
     private struct Storyboard {
-        static let ImageCellIdentifier = "Image"
-        static let UserCellIdentifier = "User"
-        static let HashtagCellIdentifier = "Hashtag"
-        static let URLCellIdentifier = "URL"
+        static let ImageCellIdentifier = "Image Cell"
+        static let MentionCellIdentifier = "Mention Cell"
     }
     
     /*
@@ -146,15 +144,3 @@ class TweetInfoTableViewController: UITableViewController {
 }
 
 
-extension NSRange {
-    func range(for str: String) -> Range<String.Index>? {
-        guard location != NSNotFound else { return nil }
-        
-        guard let fromUTFIndex = str.utf16.index(str.utf16.startIndex, offsetBy: location, limitedBy: str.utf16.endIndex) else { return nil }
-        guard let toUTFIndex = str.utf16.index(fromUTFIndex, offsetBy: length, limitedBy: str.utf16.endIndex) else { return nil }
-        guard let fromIndex = String.Index(fromUTFIndex, within: str) else { return nil }
-        guard let toIndex = String.Index(toUTFIndex, within: str) else { return nil }
-        
-        return fromIndex ..< toIndex
-    }
-}
